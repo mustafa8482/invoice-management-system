@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customers</title>
+</head>
+<body>
+
+<h2>Customer List</h2>
+
+<table border="1" cellpadding="10">
+
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+    </tr>
+
+    <% customers.forEach(customer => { %>
+
+    <tr>
+
+        <td><%= customer.id %></td>
+
+        <td><%= customer.customer_name %></td>
+
+        <td><%= customer.email %></td>
+
+        <td><%= customer.phone %></td>
+
+        <td><%= customer.address %></td>
+
+    </tr>
+
+    <% }) %>
+
+</table>
+
+</body>
+</html>

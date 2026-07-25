@@ -23,11 +23,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Routes
+// ================= Routes =================
 const authRoutes = require("./routes/authRoutes");
-console.log("✅ authRoutes loaded");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const customerRoutes = require("./routes/customerRoutes");
 
 app.use("/", authRoutes);
+app.use("/", dashboardRoutes);
+app.use("/", customerRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
@@ -40,9 +43,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server Running on http://localhost:${PORT}`);
 });
-
-
-//dasboard
-const dashboardRoutes = require("./routes/dashboardRoutes");
-
-app.use("/", dashboardRoutes);

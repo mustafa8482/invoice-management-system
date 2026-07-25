@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Customer</title>
+</head>
+<body>
+
+<h2>Add Customer</h2>
+
+<form action="/customers/add" method="POST">
+
+    <input
+        type="text"
+        name="customer_name"
+        placeholder="Customer Name"
+        required
+    >
+
+    <br><br>
+
+    <input
+        type="email"
+        name="email"
+        placeholder="Email"
+    >
+
+    <br><br>
+
+    <input
+        type="text"
+        name="phone"
+        placeholder="Phone Number"
+    >
+
+    <br><br>
+
+    <textarea
+        name="address"
+        placeholder="Address"
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Save Customer
+    </button>
+
+</form>
+
+</body>
+</html>

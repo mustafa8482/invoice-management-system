@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Customer</title>
+</head>
+<body>
+
+    <h2>Edit Customer</h2>
+
+    <form action="/customers/edit/<%= customer.id %>" method="POST">
+
+        <input
+            type="text"
+            name="customer_name"
+            value="<%= customer.customer_name %>"
+            required
+        >
+
+        <br><br>
+
+        <input
+            type="email"
+            name="email"
+            value="<%= customer.email %>"
+        >
+
+        <br><br>
+
+        <input
+            type="text"
+            name="phone"
+            value="<%= customer.phone %>"
+        >
+
+        <br><br>
+
+        <textarea
+            name="address"
+        ><%= customer.address %></textarea>
+
+        <br><br>
+
+        <button type="submit">
+            Update Customer
+        </button>
+
+    </form>
+
+</body>
+</html>
