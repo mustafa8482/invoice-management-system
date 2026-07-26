@@ -27,10 +27,14 @@ app.set("views", path.join(__dirname, "views"));
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const customerRoutes = require("./routes/customerRoutes");
+const invoiceRoutes = require("./routes/invoiceRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 app.use("/", authRoutes);
 app.use("/", dashboardRoutes);
 app.use("/", customerRoutes);
+app.use("/",invoiceRoutes);
+app.use("/",productRoutes);
 
 // Home Route
 app.get("/", (req, res) => {

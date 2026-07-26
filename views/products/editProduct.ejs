@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Product</title>
+</head>
+
+<body>
+
+    <h2>Edit Product</h2>
+
+    <form action="/products/edit/<%= product.id %>" method="POST">
+
+        <label>Product Name</label><br>
+        <input type="text" name="product_name" value="<%= product.product_name %>" required>
+        <br><br>
+
+        <label>HSN Code</label><br>
+        <input type="text" name="hsn_code" value="<%= product.hsn_code %>">
+        <br><br>
+
+        <label>Category</label><br>
+        <input type="text" name="category" value="<%= product.category %>">
+        <br><br>
+
+        <label>Price</label><br>
+        <input type="number" step="0.01" name="price" value="<%= product.price %>" required>
+        <br><br>
+
+        <label>GST Percentage</label><br>
+        <input type="number" step="0.01" name="gst_percentage" value="<%= product.gst_percentage %>">
+        <br><br>
+
+        <label>Stock</label><br>
+        <input type="number" name="stock" value="<%= product.stock %>">
+        <br><br>
+
+        <label>Unit</label><br>
+
+        <select name="unit">
+            <option value="Nos" <%= product.unit === "Nos" ? "selected" : "" %>>Nos</option>
+            <option value="Kg" <%= product.unit === "Kg" ? "selected" : "" %>>Kg</option>
+            <option value="Box" <%= product.unit === "Box" ? "selected" : "" %>>Box</option>
+            <option value="Pack" <%= product.unit === "Pack" ? "selected" : "" %>>Pack</option>
+        </select>
+
+        <br><br>
+
+        <label>Description</label><br>
+        <textarea name="description" rows="4" cols="40"><%= product.description %></textarea>
+
+        <br><br>
+
+        <button type="submit">Update Product</button>
+
+    </form>
+
+</body>
+
+</html>

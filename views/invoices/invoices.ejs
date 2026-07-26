@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoices</title>
+</head>
+<body>
+
+    <h2>Invoice List</h2>
+
+    <a href="/invoices/add">+ Create New Invoice</a>
+
+    <br><br>
+
+    <table border="1" cellpadding="10">
+
+        <tr>
+            <th>ID</th>
+            <th>Invoice No.</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>GST</th>
+            <th>Grand Total</th>
+        </tr>
+
+        <% invoices.forEach(invoice => { %>
+
+        <tr>
+
+            <td><%= invoice.id %></td>
+
+            <td><%= invoice.invoice_number %></td>
+
+            <td><%= invoice.customer_name %></td>
+
+            <td><%= invoice.invoice_date %></td>
+
+            <td><%= invoice.total %></td>
+
+            <td><%= invoice.gst %></td>
+
+            <td><%= invoice.grand_total %></td>
+
+        </tr>
+
+        <% }) %>
+
+    </table>
+
+</body>
+</html>
