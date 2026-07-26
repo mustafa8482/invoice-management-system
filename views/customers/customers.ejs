@@ -5,37 +5,53 @@
 </head>
 <body>
 
-<h2>Customer List</h2>
+    <h2>Customer List</h2>
 
-<table border="1" cellpadding="10">
+    <table border="1" cellpadding="10">
 
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Address</th>
-    </tr>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
 
-    <% customers.forEach(customer => { %>
+        <% customers.forEach(customer => { %>
 
-    <tr>
+        <tr>
 
-        <td><%= customer.id %></td>
+            <td><%= customer.id %></td>
 
-        <td><%= customer.customer_name %></td>
+            <td><%= customer.customer_name %></td>
 
-        <td><%= customer.email %></td>
+            <td><%= customer.email %></td>
 
-        <td><%= customer.phone %></td>
+            <td><%= customer.phone %></td>
 
-        <td><%= customer.address %></td>
+            <td><%= customer.address %></td>
 
-    </tr>
+            <td>
 
-    <% }) %>
+                <a href="/customers/edit/<%= customer.id %>">
+                    ✏️ Edit
+                </a>
 
-</table>
+                |
+
+                <a href="/customers/delete/<%= customer.id %>"
+                   onclick="return confirm('Are you sure you want to delete this customer?')">
+                    🗑️ Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        <% }) %>
+
+    </table>
 
 </body>
 </html>

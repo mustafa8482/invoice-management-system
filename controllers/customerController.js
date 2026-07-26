@@ -96,3 +96,23 @@ exports.updateCustomer = (req, res) => {
         });
 
 };
+
+// Delete Customer
+exports.deleteCustomer = (req, res) => {
+
+    const id = req.params.id;
+
+    const sql = "DELETE FROM customers WHERE id = ?";
+
+    db.query(sql, [id], (err) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("❌ Database Error");
+        }
+
+        res.redirect("/customers");
+
+    });
+
+};

@@ -19,3 +19,6 @@ router.get("/customers/edit/:id", customerController.editCustomerPage);
 
 // Update Customer
 router.post("/customers/edit/:id", customerController.updateCustomer);
+
+//Delete customer
+router.get("/customers/delete/:id", customerController.deleteCustomer);
