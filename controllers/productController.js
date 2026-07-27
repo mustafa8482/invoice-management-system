@@ -160,3 +160,32 @@ exports.deleteProduct = (req, res) => {
     });
 
 };
+
+
+// Get Product By ID (API)
+exports.getProductById = (req, res) => {
+
+    const id = req.params.id;
+
+    const sql = "SELECT * FROM products WHERE id = ?";
+
+    db.query(sql, [id], (err, result) => {
+
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Database Error"
+            });
+        }
+
+        if (result.length === 0) {
+            return res.status(404).json({
+                message: "Product Not Found"
+            });
+        }
+
+        res.json(result[0]);
+
+    });
+
+};

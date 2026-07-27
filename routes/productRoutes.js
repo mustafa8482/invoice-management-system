@@ -17,4 +17,7 @@ router.post("/products/edit/:id", productController.updateProduct);
 // Delete Product
 router.get("/products/delete/:id", productController.deleteProduct);
 
+// Get Product By ID (API)
+router.get("/products/:id", productController.getProductById);
+
 module.exports = router;

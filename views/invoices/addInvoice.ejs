@@ -1,63 +1,360 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Invoice</title>
-</head>
-<body>
+<%- include("../layouts/header") %>
 
-    <h2>Create Invoice</h2>
+<div class="card shadow">
 
-    <form action="/invoices/add" method="POST">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Create Invoice</h4>
+    </div>
 
-        <label>Customer</label>
-        <br>
+    <div class="card-body">
 
-        <select name="customer_id" required>
+        <form action="/invoices/add" method="POST">
 
-    <option value="">Select Customer</option>
+            <div class="row">
 
-    <% customers.forEach(customer => { %>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Invoice Number</label>
 
-        <option value="<%= customer.id %>">
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="invoice_number"
+                        placeholder="INV-001"
+                        required>
+                </div>
 
-            <%= customer.customer_name %>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Invoice Date</label>
 
-        </option>
+                    <input
+                        type="date"
+                        class="form-control"
+                        name="invoice_date"
+                        required>
+                </div>
 
-    <% }) %>
+                <div class="col-md-4 mb-3">
 
-</select>
+                    <label class="form-label">Customer</label>
 
-        <br><br>
+                    <select
+                        class="form-select"
+                        name="customer_id"
+                        required>
 
-        <label>Invoice Number</label>
-        <br>
+                        <option value="">Select Customer</option>
 
-        <input
-            type="text"
-            name="invoice_number"
-            placeholder="INV-001"
-            required
-        >
+                        <% customers.forEach(customer => { %>
 
-        <br><br>
+                            <option value="<%= customer.id %>">
+                                <%= customer.customer_name %>
+                            </option>
 
-        <label>Invoice Date</label>
-        <br>
+                        <% }) %>
 
-        <input
-            type="date"
-            name="invoice_date"
-            required
-        >
+                    </select>
 
-        <br><br>
+                </div>
 
-        <button type="submit">
-            Create Invoice
-        </button>
+            </div>
 
-    </form>
+            <hr>
 
-</body>
-</html>
+            <h5 class="mb-3">Add Product</h5>
+
+            <div class="row">
+
+                <div class="col-md-5">
+
+                    <label class="form-label">Product</label>
+
+            <select
+                    class="form-select"
+                    id="product"
+                    name="product_id">
+
+                 <option value="">Select Product</option>
+
+                 <% products.forEach(product => { %>
+
+                 <option value="<%= product.id %>">
+                 <%= product.product_name %>
+                 </option>
+
+                <% }) %>
+
+            </select>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <label class="form-label">Qty</label>
+
+                    <input
+                     type="number"
+                     class="form-control"
+                     id="quantity"
+                     name="quantity"
+                     value="1"
+                     min="1">
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <label class="form-label">Price</label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="price"
+                        value="0"
+                        readonly>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <label class="form-label">Total</label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="total"
+                        value="0"
+                        readonly>
+
+                </div>
+
+                <div class="col-md-1 d-flex align-items-end">
+
+                    <button
+                  type="button"
+                 class="btn btn-success w-100"
+                 id="addItemBtn">
+                 +
+                 </button>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <h5>Invoice Items</h5>
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>GST %</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="invoiceItems">
+
+                    <tr>
+
+                        <td colspan="6" class="text-center text-muted">
+
+                            No Products Added
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <div class="row justify-content-end">
+
+                <div class="col-md-4">
+
+                    <table class="table">
+
+                        <tr>
+                            <th>Subtotal</th>
+                            <td id="subtotal">0.00</td>
+                        </tr>
+
+                        <tr>
+                            <th>CGST</th>
+                            <td id="cgst">0.00</td>
+                        </tr>
+
+                        <tr>
+                            <th>SGST</th>
+                            <td id="sgst">0.00</td>
+                        </tr>
+
+                        <tr class="table-primary">
+
+                            <th>Grand Total</th>
+                            <th id="grandTotal">0.00</th>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn btn-primary">
+
+                Save Invoice
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+const product = document.getElementById("product");
+const price = document.getElementById("price");
+const quantity = document.getElementById("quantity");
+const total = document.getElementById("total");
+
+product.addEventListener("change", function(){
+
+    const id = product.value;
+
+if (!id) {
+
+    price.value = 0;
+    total.value = 0;
+    return;
+
+}
+
+fetch("/products/" + id)
+    .then(response => response.json())
+    .then(data => {
+
+        price.value = data.price;
+
+        total.value = data.price * quantity.value;
+
+    });
+
+});
+
+quantity.addEventListener("input", function () {
+
+    total.value = Number(price.value) * Number(quantity.value);
+
+});
+
+const addItemBtn = document.getElementById("addItemBtn");
+const invoiceItems = document.getElementById("invoiceItems");
+
+const subtotal = document.getElementById("subtotal");
+const cgst = document.getElementById("cgst");
+const sgst = document.getElementById("sgst");
+const grandTotal = document.getElementById("grandTotal");
+
+function calculateTotals() {
+
+    let sub = 0;
+
+    const rows = invoiceItems.querySelectorAll("tr");
+
+    rows.forEach(row => {
+
+        const cols = row.querySelectorAll("td");
+
+        if (cols.length === 6) {
+
+            sub += Number(cols[4].innerText);
+
+        }
+
+    });
+
+    subtotal.innerText = sub.toFixed(2);
+
+    const cgstValue = sub * 0.09;
+    const sgstValue = sub * 0.09;
+
+    cgst.innerText = cgstValue.toFixed(2);
+    sgst.innerText = sgstValue.toFixed(2);
+
+    grandTotal.innerText = (sub + cgstValue + sgstValue).toFixed(2);
+
+}
+
+addItemBtn.addEventListener("click", function () {
+
+    if (product.value === "") {
+        alert("Please select a product");
+        return;
+    }
+
+    const productName = product.options[product.selectedIndex].text;
+
+    const row = `
+        <tr>
+            <td>${productName}</td>
+            <td>${price.value}</td>
+            <td>-</td>
+            <td>${quantity.value}</td>
+            <td>${total.value}</td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm deleteItem">Delete</button>
+            </td>
+        </tr>
+    `;
+
+    // "No Products Added" wali row hatao
+    if (invoiceItems.innerText.includes("No Products Added")) {
+        invoiceItems.innerHTML = "";
+    }
+
+    invoiceItems.innerHTML += row;
+    calculateTotals();
+
+});
+
+invoiceItems.addEventListener("click", function (e) {
+
+    if (e.target.classList.contains("deleteItem")) {
+
+        e.target.closest("tr").remove();
+
+        // Agar saari rows delete ho gayi to message wapas dikhao
+        if (invoiceItems.children.length === 0) {
+
+            invoiceItems.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-muted">
+                        No Products Added
+                    </td>
+                </tr>
+            `;
+
+        }
+        calculateTotals();
+
+    }
+
+});
+
+</script>
+
+<%- include("../layouts/footer") %>

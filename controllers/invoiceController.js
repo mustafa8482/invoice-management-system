@@ -1,19 +1,31 @@
 const db = require("../config/db");
 
 // Add Invoice Page
+// Add Invoice Page
 exports.addInvoicePage = (req, res) => {
 
-    const sql = "SELECT * FROM customers";
+    const customerSql = "SELECT * FROM customers";
+    const productSql = "SELECT * FROM products";
 
-    db.query(sql, (err, result) => {
+    db.query(customerSql, (err, customers) => {
 
         if (err) {
             console.log(err);
-            return res.send("Database Error");
+            return res.send("Customer Database Error");
         }
 
-        res.render("invoices/addInvoice", {
-            customers: result
+        db.query(productSql, (err, products) => {
+
+            if (err) {
+                console.log(err);
+                return res.send("Product Database Error");
+            }
+
+            res.render("invoices/addInvoice", {
+                customers: customers,
+                products: products
+            });
+
         });
 
     });
