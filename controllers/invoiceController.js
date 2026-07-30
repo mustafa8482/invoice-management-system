@@ -36,27 +36,73 @@ exports.addInvoicePage = (req, res) => {
 // Save Invoice
 exports.saveInvoice = (req, res) => {
 
-    const {
-        customer_id,
-        invoice_number,
-        invoice_date
-    } = req.body;
+  const {
+    customer_id,
+    invoice_number,
+    invoice_date,
+    invoice_items,
+    subtotal,
+    gst,
+    grand_total
+} = req.body;
 
+const items = JSON.parse(invoice_items);
     const sql = `
         INSERT INTO invoices
         (customer_id, invoice_number, invoice_date, total, gst, grand_total)
         VALUES (?, ?, ?, ?, ?, ?)
-    `;
+    `; 
 
     db.query(
         sql,
-        [customer_id, invoice_number, invoice_date, 0, 0, 0],
+       [
+    customer_id,
+    invoice_number,
+    invoice_date,
+    subtotal,
+    gst,
+    grand_total
+],
         (err, result) => {
 
             if (err) {
                 console.log(err);
                 return res.send("Database Error");
             }
+
+            const invoiceId = result.insertId;
+            console.log(invoiceId);
+            console.log(items); 
+
+
+            const itemSql = `
+    INSERT INTO invoice_items
+    (invoice_id, product_id, quantity, price, gst, total)
+    VALUES (?, ?, ?, ?, ?, ?)
+`;
+
+items.forEach((item) => {
+
+    db.query(
+        itemSql,
+        [
+            invoiceId,
+            item.product_id,
+            item.quantity,
+            item.price,
+            18, // फिलहाल GST fixed rakhte hain
+            item.total
+        ],
+        (err) => {
+
+            if (err) {
+                console.log(err);
+            }
+
+        }
+    );
+
+});
 
             res.redirect("/invoices");
 

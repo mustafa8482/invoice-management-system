@@ -153,9 +153,8 @@
                         <th>Product</th>
                         <th>Price</th>
                         <th>GST %</th>
-                        <th>Qty</th>
+                        <th>Quantity</th>
                         <th>Total</th>
-                        <th>Action</th>
 
                     </tr>
 
@@ -211,6 +210,16 @@
 
             </div>
 
+             <input
+             type="hidden"
+             name="invoice_items"
+             id="invoice_items">
+
+
+             <input type="hidden" id="subtotalInput" name="subtotal">
+             <input type="hidden" id="gstInput" name="gst">
+             <input type="hidden" id="grandTotalInput" name="grand_total">
+
             <button
                 class="btn btn-primary">
 
@@ -227,39 +236,9 @@
 <script>
 
 const product = document.getElementById("product");
-const price = document.getElementById("price");
 const quantity = document.getElementById("quantity");
+const price = document.getElementById("price");
 const total = document.getElementById("total");
-
-product.addEventListener("change", function(){
-
-    const id = product.value;
-
-if (!id) {
-
-    price.value = 0;
-    total.value = 0;
-    return;
-
-}
-
-fetch("/products/" + id)
-    .then(response => response.json())
-    .then(data => {
-
-        price.value = data.price;
-
-        total.value = data.price * quantity.value;
-
-    });
-
-});
-
-quantity.addEventListener("input", function () {
-
-    total.value = Number(price.value) * Number(quantity.value);
-
-});
 
 const addItemBtn = document.getElementById("addItemBtn");
 const invoiceItems = document.getElementById("invoiceItems");
@@ -269,91 +248,204 @@ const cgst = document.getElementById("cgst");
 const sgst = document.getElementById("sgst");
 const grandTotal = document.getElementById("grandTotal");
 
+const invoiceItemsInput = document.getElementById("invoice_items");
+const subtotalInput = document.getElementById("subtotalInput");
+const gstInput = document.getElementById("gstInput");
+const grandTotalInput = document.getElementById("grandTotalInput");
+
+let items = [];
+
+// Product Change
+product.addEventListener("change", async () => {
+
+    if (!product.value) {
+        price.value = 0;
+        total.value = 0;
+        return;
+    }
+
+    const res = await fetch("/products/" + product.value);
+    const data = await res.json();
+
+    price.value = data.price;
+    total.value = Number(data.price) * Number(quantity.value).toFixed(2);
+
+});
+
+// Quantity Change
+quantity.addEventListener("input", () => {
+    total.value = Number(price.value) * Number(quantity.value).toFixed(2);
+});
+
+// Render Table
+function renderTable() {
+
+    if (items.length === 0) {
+
+        invoiceItems.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center">
+                    No Products Added
+                </td>
+            </tr>
+        `;
+
+        calculateTotals();
+        return;
+    }
+
+    invoiceItems.innerHTML = "";
+
+    items.forEach((item, index) => {
+
+        const productName =
+            product.querySelector(`option[value="${item.product_id}"]`).text;
+
+        invoiceItems.insertAdjacentHTML("beforeend", `
+            <tr>
+                <td>${productName}</td>
+                <td>${item.price}</td>
+                <td>18%</td>
+               <td>
+                   <button
+                       type="button"
+                       class="btn btn-danger btn-sm minusBtn"
+                       data-index="${index}">
+                       -
+                   </button>
+
+                    <span class="mx-2 fw-bold">
+                        ${item.quantity}
+                    </span>
+
+                    <button
+                        type="button"
+                        class="btn btn-success btn-sm plusBtn"
+                        data-index="${index}">
+                        +
+                    </button>
+                </td>
+
+                <td>${item.total}</td>
+            </tr>
+        `);
+
+    });
+
+    invoiceItemsInput.value = JSON.stringify(items);
+
+    calculateTotals();
+
+}
+
+// Calculate Totals
 function calculateTotals() {
 
     let sub = 0;
 
-    const rows = invoiceItems.querySelectorAll("tr");
-
-    rows.forEach(row => {
-
-        const cols = row.querySelectorAll("td");
-
-        if (cols.length === 6) {
-
-            sub += Number(cols[4].innerText);
-
-        }
-
+    items.forEach(item => {
+        sub += Number(item.total);
     });
-
-    subtotal.innerText = sub.toFixed(2);
 
     const cgstValue = sub * 0.09;
     const sgstValue = sub * 0.09;
+    const grand = sub + cgstValue + sgstValue;
 
+    subtotal.innerText = sub.toFixed(2);
     cgst.innerText = cgstValue.toFixed(2);
     sgst.innerText = sgstValue.toFixed(2);
+    grandTotal.innerText = grand.toFixed(2);
 
-    grandTotal.innerText = (sub + cgstValue + sgstValue).toFixed(2);
+    subtotalInput.value = sub.toFixed(2);
+    gstInput.value = (cgstValue + sgstValue).toFixed(2);
+    grandTotalInput.value = grand.toFixed(2);
+
+    invoiceItemsInput.value = JSON.stringify(items);
 
 }
 
-addItemBtn.addEventListener("click", function () {
+// Add Item
+addItemBtn.addEventListener("click", () => {
 
     if (product.value === "") {
         alert("Please select a product");
         return;
     }
 
-    const productName = product.options[product.selectedIndex].text;
+    const existing = items.find(
+        item => item.product_id == product.value
+    );
 
-    const row = `
-        <tr>
-            <td>${productName}</td>
-            <td>${price.value}</td>
-            <td>-</td>
-            <td>${quantity.value}</td>
-            <td>${total.value}</td>
-            <td>
-                <button type="button" class="btn btn-danger btn-sm deleteItem">Delete</button>
-            </td>
-        </tr>
-    `;
+    if (existing) {
 
-    // "No Products Added" wali row hatao
-    if (invoiceItems.innerText.includes("No Products Added")) {
-        invoiceItems.innerHTML = "";
+        existing.quantity =
+            Number(existing.quantity) + Number(quantity.value);
+
+        existing.total =
+            (Number(existing.quantity) * Number(existing.price)).toFixed(2);
+
+    } else {
+
+        items.push({
+            product_id: product.value,
+            quantity: Number(quantity.value),
+            price: Number(price.value),
+            total: Number(total.value).toFixed(2)
+        });
+
     }
 
-    invoiceItems.innerHTML += row;
-    calculateTotals();
+    renderTable();
+
+    // Reset
+    product.value = "";
+    quantity.value = 1;
+    price.value = 0;
+    total.value = 0;
 
 });
 
+// Delete Item
 invoiceItems.addEventListener("click", function (e) {
 
-    if (e.target.classList.contains("deleteItem")) {
+    const index = e.target.dataset.index;
 
-        e.target.closest("tr").remove();
+    if (index === undefined) return;
 
-        // Agar saari rows delete ho gayi to message wapas dikhao
-        if (invoiceItems.children.length === 0) {
+    // PLUS BUTTON
+    if (e.target.classList.contains("plusBtn")) {
 
-            invoiceItems.innerHTML = `
-                <tr>
-                    <td colspan="6" class="text-center text-muted">
-                        No Products Added
-                    </td>
-                </tr>
-            `;
+        items[index].quantity++;
+
+       items[index].total =
+    (items[index].quantity * items[index].price).toFixed(2);
+
+        renderTable();
+
+    }
+
+    // MINUS BUTTON
+    if (e.target.classList.contains("minusBtn")) {
+
+        if (items[index].quantity > 1) {
+
+            items[index].quantity--;
+
+            items[index].total =
+                items[index].quantity * items[index].price.toFixed(2);
+
+        } else {
+
+            items.splice(index, 1);
 
         }
-        calculateTotals();
+
+        renderTable();
 
     }
 
 });
+
 
 </script>
 
