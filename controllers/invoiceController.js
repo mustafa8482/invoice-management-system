@@ -42,6 +42,7 @@ exports.saveInvoice = (req, res) => {
     invoice_date,
     invoice_items,
     subtotal,
+    discount,
     gst,
     grand_total
 } = req.body;
@@ -49,8 +50,8 @@ exports.saveInvoice = (req, res) => {
 const items = JSON.parse(invoice_items);
     const sql = `
         INSERT INTO invoices
-        (customer_id, invoice_number, invoice_date, total, gst, grand_total)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (customer_id, invoice_number, invoice_date, total, discount, gst, grand_total)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     `; 
 
     db.query(
@@ -60,6 +61,7 @@ const items = JSON.parse(invoice_items);
     invoice_number,
     invoice_date,
     subtotal,
+    discount,
     gst,
     grand_total
 ],
@@ -133,5 +135,97 @@ exports.getInvoices = (req, res) => {
         });
 
     });
+    
+
+};
+
+// View Single Invoice
+exports.viewInvoice = (req, res) => {
+
+    const invoiceId = req.params.id;
+
+    const sql = `
+        SELECT
+            invoices.*,
+            customers.customer_name,
+            customers.email,
+            customers.phone,
+            customers.address
+        FROM invoices
+        JOIN customers
+        ON invoices.customer_id = customers.id
+        WHERE invoices.id = ?
+    `;
+
+    db.query(sql, [invoiceId], (err, invoiceResult) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("Database Error");
+        }
+
+        const itemSql = `
+            SELECT
+                invoice_items.*,
+                products.product_name
+            FROM invoice_items
+            JOIN products
+            ON invoice_items.product_id = products.id
+            WHERE invoice_items.invoice_id = ?
+        `;
+
+        db.query(itemSql, [invoiceId], (err, itemResult) => {
+
+            if (err) {
+                console.log(err);
+                return res.send("Database Error");
+            }
+
+            res.render("invoices/viewInvoice", {
+                invoice: invoiceResult[0],
+                items: itemResult
+            });
+
+        });
+
+    });
+
+};
+
+
+// Delete Invoice
+exports.deleteInvoice = (req, res) => {
+
+    const invoiceId = req.params.id;
+
+    // Pehle invoice_items delete karo
+    db.query(
+        "DELETE FROM invoice_items WHERE invoice_id = ?",
+        [invoiceId],
+        (err) => {
+
+            if (err) {
+                console.log(err);
+                return res.send("Database Error");
+            }
+
+            // Fir invoice delete karo
+            db.query(
+                "DELETE FROM invoices WHERE id = ?",
+                [invoiceId],
+                (err) => {
+
+                    if (err) {
+                        console.log(err);
+                        return res.send("Database Error");
+                    }
+
+                    res.redirect("/invoices");
+
+                }
+            );
+
+        }
+    );
 
 };

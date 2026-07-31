@@ -1,0 +1,111 @@
+<%- include("../layouts/header") %>
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Invoice Details</h4>
+
+            <button class="btn btn-light" onclick="window.print()">
+                🖨 Print
+            </button>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row mb-4">
+
+                <div class="col-md-6">
+                    <h5>Invoice Information</h5>
+
+                    <p><strong>Invoice No:</strong> <%= invoice.invoice_number %></p>
+                    <p><strong>Date:</strong> <%= invoice.invoice_date %></p>
+                </div>
+
+                <div class="col-md-6">
+                    <h5>Customer Details</h5>
+
+                    <p><strong>Name:</strong> <%= invoice.customer_name %></p>
+                    <p><strong>Email:</strong> <%= invoice.email %></p>
+                    <p><strong>Phone:</strong> <%= invoice.phone %></p>
+                    <p><strong>Address:</strong> <%= invoice.address %></p>
+                </div>
+
+            </div>
+
+            <table class="table table-bordered">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>GST %</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <% items.forEach(item => { %>
+
+                        <tr>
+
+                            <td><%= item.product_name %></td>
+                            <td>₹ <%= Number(item.price).toFixed(2) %></td>
+                            <td><%= item.gst %>%</td>
+                            <td><%= item.quantity %></td>
+                            <td>₹ <%= Number(item.total).toFixed(2) %></td>
+
+                        </tr>
+
+                    <% }) %>
+
+                </tbody>
+
+            </table>
+
+            <div class="row justify-content-end">
+
+                <div class="col-md-4">
+
+                    <table class="table">
+
+                        <tr>
+                            <th>Subtotal</th>
+                            <td>₹ <%= Number(invoice.total).toFixed(2) %></td>
+                        </tr>
+
+                        <tr>
+                            <th>Discount</th>
+                            <td>₹ <%= Number(invoice.discount).toFixed(2) %></td>
+                        </tr>
+
+                        <tr>
+                            <th>GST</th>
+                            <td>₹ <%= Number(invoice.gst).toFixed(2) %></td>
+                        </tr>
+
+                        <tr class="table-primary">
+
+                            <th>Grand Total</th>
+                            <th>₹ <%= Number(invoice.grand_total).toFixed(2) %></th>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

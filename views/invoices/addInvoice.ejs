@@ -186,6 +186,27 @@
                             <th>Subtotal</th>
                             <td id="subtotal">0.00</td>
                         </tr>
+                        <tr>
+    <th>Discount Type</th>
+    <td>
+        <select id="discountType" class="form-select">
+            <option value="amount">₹ Amount</option>
+            <option value="percent">Percentage (%)</option>
+        </select>
+    </td>
+</tr>
+
+<tr>
+    <th>Discount</th>
+    <td>
+        <input
+            type="number"
+            id="discount"
+            class="form-control"
+            value="0"
+            min="0">
+    </td>
+</tr>
 
                         <tr>
                             <th>CGST</th>
@@ -203,7 +224,6 @@
                             <th id="grandTotal">0.00</th>
 
                         </tr>
-
                     </table>
 
                 </div>
@@ -219,6 +239,7 @@
              <input type="hidden" id="subtotalInput" name="subtotal">
              <input type="hidden" id="gstInput" name="gst">
              <input type="hidden" id="grandTotalInput" name="grand_total">
+             <input type="hidden" id="discountInput" name="discount">
 
             <button
                 class="btn btn-primary">
@@ -247,6 +268,9 @@ const subtotal = document.getElementById("subtotal");
 const cgst = document.getElementById("cgst");
 const sgst = document.getElementById("sgst");
 const grandTotal = document.getElementById("grandTotal");
+const discount = document.getElementById("discount");
+const discountType = document.getElementById("discountType");
+const discountInput = document.getElementById("discountInput");
 
 const invoiceItemsInput = document.getElementById("invoice_items");
 const subtotalInput = document.getElementById("subtotalInput");
@@ -347,9 +371,30 @@ function calculateTotals() {
         sub += Number(item.total);
     });
 
-    const cgstValue = sub * 0.09;
-    const sgstValue = sub * 0.09;
-    const grand = sub + cgstValue + sgstValue;
+    // Discount Calculate
+    let discountValue = 0;
+
+    if (discountType.value === "amount") {
+
+        discountValue = Number(discount.value);
+
+    } else {
+
+        discountValue = (sub * Number(discount.value)) / 100;
+
+    }
+
+    // Discount subtotal se zyada na ho
+    if (discountValue > sub) {
+        discountValue = sub;
+    }
+
+    const taxableAmount = sub - discountValue;
+
+    const cgstValue = taxableAmount * 0.09;
+    const sgstValue = taxableAmount * 0.09;
+
+    const grand = taxableAmount + cgstValue + sgstValue;
 
     subtotal.innerText = sub.toFixed(2);
     cgst.innerText = cgstValue.toFixed(2);
@@ -357,6 +402,7 @@ function calculateTotals() {
     grandTotal.innerText = grand.toFixed(2);
 
     subtotalInput.value = sub.toFixed(2);
+    discountInput.value = discountValue.toFixed(2);
     gstInput.value = (cgstValue + sgstValue).toFixed(2);
     grandTotalInput.value = grand.toFixed(2);
 
@@ -432,7 +478,7 @@ invoiceItems.addEventListener("click", function (e) {
             items[index].quantity--;
 
             items[index].total =
-                items[index].quantity * items[index].price.toFixed(2);
+    (items[index].quantity * items[index].price).toFixed(2);
 
         } else {
 
@@ -441,10 +487,12 @@ invoiceItems.addEventListener("click", function (e) {
         }
 
         renderTable();
-
     }
 
 });
+
+discount.addEventListener("input", calculateTotals);
+discountType.addEventListener("change", calculateTotals);
 
 
 </script>

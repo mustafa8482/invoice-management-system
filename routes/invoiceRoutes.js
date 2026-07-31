@@ -12,4 +12,10 @@ router.post("/invoices/add", invoiceController.saveInvoice);
 // View All Invoices
 router.get("/invoices", invoiceController.getInvoices);
 
+//view single invoices
+router.get("/invoices/:id", invoiceController.viewInvoice);
+
+// Delete Invoice
+router.delete("/invoices/:id", invoiceController.deleteInvoice);
+
 module.exports = router;
