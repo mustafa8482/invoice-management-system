@@ -15,7 +15,16 @@ router.get("/invoices", invoiceController.getInvoices);
 //view single invoices
 router.get("/invoices/:id", invoiceController.viewInvoice);
 
+// Edit Invoice Page
+router.get("/invoices/:id/edit", invoiceController.editInvoicePage);
+
+// Update Invoice
+router.put("/invoices/:id", invoiceController.updateInvoice);
+
 // Delete Invoice
 router.delete("/invoices/:id", invoiceController.deleteInvoice);
 
-module.exports = router;
+// Download PDF
+router.get("/invoices/:id/pdf", invoiceController.downloadInvoicePDF);
+
+module.exports = router; 
