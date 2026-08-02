@@ -6,40 +6,83 @@
         <h4 class="mb-0">
     <%= typeof isEdit !== "undefined" && isEdit ? "Edit Invoice" : "Create Invoice" %>
 </h4>
-    </div>
+    <div class="container mt-4 mb-5">
 
     <div class="card-body">
 
         <form action="<%= (typeof isEdit !== 'undefined' && isEdit) ? '/invoices/' + invoice.id + '?_method=PUT' : '/invoices/add' %>" method="POST">
 
-            <div class="row">
+           <div class="card shadow-sm border-0 mb-4">
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Invoice Number</label>
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-receipt"></i>
+            Invoice Information
+        </h5>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <div class="col-md-4 mb-3">
+
+                <label class="form-label fw-semibold">
+                    Invoice Number
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        <i class="bi bi-hash"></i>
+                    </span>
 
                     <input
-                     type="text"
-                     class="form-control"
-                     name="invoice_number"
-                     value="<%= (typeof isEdit !== 'undefined' && isEdit) ? invoice.invoice_number : '' %>"
-                     placeholder="INV-001"
-                     required>
+                        type="text"
+                        class="form-control"
+                        name="invoice_number"
+                        value="<%= (typeof isEdit !== 'undefined' && isEdit) ? invoice.invoice_number : '' %>"
+                        placeholder="INV-001"
+                        required>
+
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Invoice Date</label>
+            </div>
+
+            <div class="col-md-4 mb-3">
+
+                <label class="form-label fw-semibold">
+                    Invoice Date
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        <i class="bi bi-calendar-event"></i>
+                    </span>
 
                     <input
-                    type="date"
-                    class="form-control"
-                    name="invoice_date"
-                    value="<%= isEdit ? invoice.invoice_date : '' %>"
-                    required>
+                        type="date"
+                        class="form-control"
+                        name="invoice_date"
+                        value="<%= isEdit ? invoice.invoice_date : '' %>"
+                        required>
+
                 </div>
 
-                <div class="col-md-4 mb-3">
+            </div>
 
-                    <label class="form-label">Customer</label>
+            <div class="col-md-4 mb-3">
+
+                <label class="form-label fw-semibold">
+                    Customer
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        <i class="bi bi-person-fill"></i>
+                    </span>
 
                     <select
                         class="form-select"
@@ -50,11 +93,13 @@
 
                         <% customers.forEach(customer => { %>
 
-                            <option
-                                value="<%= customer.id %>"
-                                <%= isEdit && invoice.customer_id == customer.id ? 'selected' : '' %>>
-                                <%= customer.customer_name %>
-                            </option>
+                        <option
+                            value="<%= customer.id %>"
+                            <%= isEdit && invoice.customer_id == customer.id ? "selected" : "" %>>
+
+                            <%= customer.customer_name %>
+
+                        </option>
 
                         <% }) %>
 
@@ -64,104 +109,145 @@
 
             </div>
 
+        </div>
+
+    </div>
+
+</div>
+
             <hr>
 
-            <h5 class="mb-3">Add Product</h5>
+          <div class="card shadow-sm border-0 mb-4">
 
-            <div class="row">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">
+            <i class="bi bi-box-seam"></i>
+            Add Product
+        </h5>
+    </div>
 
-                <div class="col-md-5">
+    <div class="card-body">
 
-                    <label class="form-label">Product</label>
+        <div class="row g-3 align-items-end">
 
-            <select
-                    class="form-select"
+            <div class="col-md-5">
+
+                <label class="form-label fw-semibold">Product</label>
+
+                <select
                     id="product"
-                    name="product_id">
+                    name="product_id"
+                    class="form-select">
 
-                 <option value="">Select Product</option>
+                    <option value="">Select Product</option>
 
-                 <% products.forEach(product => { %>
+                    <% products.forEach(product => { %>
 
-                 <option value="<%= product.id %>">
-                 <%= product.product_name %>
-                 </option>
+                    <option value="<%= product.id %>">
+                        <%= product.product_name %>
+                    </option>
 
-                <% }) %>
+                    <% }) %>
 
-            </select>
+                </select>
 
-                </div>
+            </div>
 
-                <div class="col-md-2">
+            <div class="col-md-2">
 
-                    <label class="form-label">Qty</label>
+                <label class="form-label fw-semibold">Qty</label>
 
-                    <input
-                     type="number"
-                     class="form-control"
-                     id="quantity"
-                     name="quantity"
-                     value="1"
-                     min="1">
+                <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    class="form-control"
+                    value="1"
+                    min="1">
 
-                </div>
+            </div>
 
-                <div class="col-md-2">
+            <div class="col-md-2">
 
-                    <label class="form-label">Price</label>
+                <label class="form-label fw-semibold">Price</label>
+
+                <div class="input-group">
+                    <span class="input-group-text">₹</span>
 
                     <input
                         type="text"
-                        class="form-control"
                         id="price"
-                        value="0"
-                        readonly>
-
-                </div>
-
-                <div class="col-md-2">
-
-                    <label class="form-label">Total</label>
-
-                    <input
-                        type="text"
                         class="form-control"
-                        id="total"
                         value="0"
                         readonly>
-
-                </div>
-
-                <div class="col-md-1 d-flex align-items-end">
-
-                    <button
-                  type="button"
-                 class="btn btn-success w-100"
-                 id="addItemBtn">
-                 +
-                 </button>
-
                 </div>
 
             </div>
 
+            <div class="col-md-2">
+
+                <label class="form-label fw-semibold">Total</label>
+
+                <div class="input-group">
+                    <span class="input-group-text">₹</span>
+
+                    <input
+                        type="text"
+                        id="total"
+                        class="form-control"
+                        value="0"
+                        readonly>
+                </div>
+
+            </div>
+
+            <div class="col-md-1 d-grid">
+
+                <button
+                    type="button"
+                    id="addItemBtn"
+                    class="btn btn-success">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
             <hr>
 
-            <h5>Invoice Items</h5>
+<div class="card shadow-sm border-0 mb-4">
 
-            <table class="table table-bordered table-hover">
+    <div class="card-header bg-dark text-white">
+
+        <h5 class="mb-0">
+            <i class="bi bi-table"></i>
+            Invoice Items
+        </h5>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
 
                 <thead class="table-dark">
 
                     <tr>
-
                         <th>Product</th>
                         <th>Price</th>
                         <th>GST %</th>
                         <th>Quantity</th>
                         <th>Total</th>
-
+                        <th width="80">Action</th>
                     </tr>
 
                 </thead>
@@ -170,7 +256,9 @@
 
                     <tr>
 
-                        <td colspan="6" class="text-center text-muted">
+                        <td colspan="6" class="text-center text-muted py-4">
+
+                            <i class="bi bi-cart-x fs-3 d-block mb-2"></i>
 
                             No Products Added
 
@@ -182,59 +270,90 @@
 
             </table>
 
-            <div class="row justify-content-end">
+        </div>
 
-                <div class="col-md-4">
+    </div>
 
-                    <table class="table">
+</div>
+           <div class="row justify-content-end">
 
-                        <tr>
-                            <th>Subtotal</th>
-                            <td id="subtotal">0.00</td>
-                        </tr>
-                        <tr>
-    <th>Discount Type</th>
-    <td>
-        <select id="discountType" class="form-select">
-            <option value="amount">₹ Amount</option>
-            <option value="percent">Percentage (%)</option>
-        </select>
-    </td>
-</tr>
+    <div class="col-lg-5">
 
-<tr>
-    <th>Discount</th>
-    <td>
-        <input
-            type="number"
-            id="discount"
-            class="form-control"
-            value="0"
-            min="0">
-    </td>
-</tr>
+        <div class="card shadow border-0">
 
-                        <tr>
-                            <th>CGST</th>
-                            <td id="cgst">0.00</td>
-                        </tr>
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-calculator"></i>
+                    Invoice Summary
+                </h5>
+            </div>
 
-                        <tr>
-                            <th>SGST</th>
-                            <td id="sgst">0.00</td>
-                        </tr>
+            <div class="card-body">
 
-                        <tr class="table-primary">
+                <table class="table table-borderless mb-0">
 
-                            <th>Grand Total</th>
-                            <th id="grandTotal">0.00</th>
+                    <tr>
+                        <th>Subtotal</th>
+                        <td class="text-end fw-bold" id="subtotal">₹ 0.00</td>
+                    </tr>
 
-                        </tr>
-                    </table>
+                    <tr>
+                        <th>Discount Type</th>
+                        <td>
+                            <select id="discountType" class="form-select">
+                                <option value="amount">₹ Amount</option>
+                                <option value="percent">Percentage (%)</option>
+                            </select>
+                        </td>
+                    </tr>
 
-                </div>
+                    <tr>
+                        <th>Discount</th>
+                        <td>
+                            <input
+                                type="number"
+                                id="discount"
+                                class="form-control"
+                                value="0"
+                                min="0">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>CGST</th>
+                        <td class="text-end text-success fw-bold" id="cgst">₹ 0.00</td>
+                    </tr>
+
+                    <tr>
+                        <th>SGST</th>
+                        <td class="text-end text-success fw-bold" id="sgst">₹ 0.00</td>
+                    </tr>
+
+                    <tr class="table-primary">
+
+                        <th class="fs-5">
+                            Grand Total
+                        </th>
+
+                        <th
+                            class="text-end fs-4 text-primary"
+                            id="grandTotal">
+
+                            ₹ 0.00
+
+                        </th>
+
+                    </tr>
+
+                </table>
 
             </div>
+
+        </div>
+
+    </div>
+
+</div>
 
              <input
              type="hidden"
@@ -247,9 +366,24 @@
              <input type="hidden" id="grandTotalInput" name="grand_total">
              <input type="hidden" id="discountInput" name="discount">
 
-<button type="submit" class="btn btn-primary">
-    <%= isEdit ? "Update Invoice" : "Save Invoice" %>
-</button>
+<div class="d-flex justify-content-between mt-4">
+
+    <a href="/invoices" class="btn btn-secondary btn-lg">
+        <i class="bi bi-arrow-left"></i>
+        Back
+    </a>
+
+    <button
+        type="submit"
+        class="btn btn-success btn-lg px-5">
+
+        <i class="bi bi-check-circle-fill"></i>
+
+        <%= isEdit ? "Update Invoice" : "Save Invoice" %>
+
+    </button>
+
+</div>
 
         </form>
 
@@ -260,7 +394,6 @@
 <script>
 
 const isEdit = <%= isEdit ? true : false %>;
-
 const product = document.getElementById("product");
 const quantity = document.getElementById("quantity");
 const price = document.getElementById("price");

@@ -1,60 +1,156 @@
-<!DOCTYPE html>
-<html>
+<%- include("../layouts/header") %>
 
-<head>
-    <title>Edit Product</title>
-</head>
+<div class="container-fluid">
 
-<body>
+    <div class="row justify-content-center">
 
-    <h2>Edit Product</h2>
+        <div class="col-lg-8">
 
-    <form action="/products/edit/<%= product.id %>" method="POST">
+            <div class="card shadow border-0 rounded-4">
 
-        <label>Product Name</label><br>
-        <input type="text" name="product_name" value="<%= product.product_name %>" required>
-        <br><br>
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil-square"></i>
+                        Edit Product
+                    </h4>
+                </div>
 
-        <label>HSN Code</label><br>
-        <input type="text" name="hsn_code" value="<%= product.hsn_code %>">
-        <br><br>
+                <div class="card-body p-4">
 
-        <label>Category</label><br>
-        <input type="text" name="category" value="<%= product.category %>">
-        <br><br>
+                    <form action="/products/edit/<%= product.id %>" method="POST">
 
-        <label>Price</label><br>
-        <input type="number" step="0.01" name="price" value="<%= product.price %>" required>
-        <br><br>
+                        <div class="row">
 
-        <label>GST Percentage</label><br>
-        <input type="number" step="0.01" name="gst_percentage" value="<%= product.gst_percentage %>">
-        <br><br>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Product Name</label>
 
-        <label>Stock</label><br>
-        <input type="number" name="stock" value="<%= product.stock %>">
-        <br><br>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-box"></i>
+                                    </span>
 
-        <label>Unit</label><br>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="product_name"
+                                        value="<%= product.product_name %>"
+                                        required>
+                                </div>
+                            </div>
 
-        <select name="unit">
-            <option value="Nos" <%= product.unit === "Nos" ? "selected" : "" %>>Nos</option>
-            <option value="Kg" <%= product.unit === "Kg" ? "selected" : "" %>>Kg</option>
-            <option value="Box" <%= product.unit === "Box" ? "selected" : "" %>>Box</option>
-            <option value="Pack" <%= product.unit === "Pack" ? "selected" : "" %>>Pack</option>
-        </select>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">HSN Code</label>
 
-        <br><br>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="hsn_code"
+                                    value="<%= product.hsn_code %>">
+                            </div>
 
-        <label>Description</label><br>
-        <textarea name="description" rows="4" cols="40"><%= product.description %></textarea>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category</label>
 
-        <br><br>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="category"
+                                    value="<%= product.category %>">
+                            </div>
 
-        <button type="submit">Update Product</button>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Price (₹)</label>
 
-    </form>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    class="form-control"
+                                    name="price"
+                                    value="<%= product.price %>"
+                                    required>
+                            </div>
 
-</body>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">GST (%)</label>
 
-</html>
+                                <select class="form-select" name="gst_percentage">
+
+                                    <option value="5" <%= product.gst_percentage==5 ? "selected" : "" %>>5%</option>
+
+                                    <option value="12" <%= product.gst_percentage==12 ? "selected" : "" %>>12%</option>
+
+                                    <option value="18" <%= product.gst_percentage==18 ? "selected" : "" %>>18%</option>
+
+                                    <option value="28" <%= product.gst_percentage==28 ? "selected" : "" %>>28%</option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Stock</label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    name="stock"
+                                    value="<%= product.stock %>">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Unit</label>
+
+                                <select class="form-select" name="unit">
+
+                                    <option value="Nos" <%= product.unit=="Nos" ? "selected" : "" %>>Nos</option>
+
+                                    <option value="Kg" <%= product.unit=="Kg" ? "selected" : "" %>>Kg</option>
+
+                                    <option value="Box" <%= product.unit=="Box" ? "selected" : "" %>>Box</option>
+
+                                    <option value="Pack" <%= product.unit=="Pack" ? "selected" : "" %>>Pack</option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <label class="form-label">Description</label>
+
+                                <textarea
+                                    class="form-control"
+                                    rows="4"
+                                    name="description"><%= product.description %></textarea>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <a href="/products" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Back
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-warning">
+
+                                <i class="bi bi-check-circle"></i>
+                                Update Product
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

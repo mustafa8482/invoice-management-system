@@ -1,59 +1,163 @@
-<!DOCTYPE html>
-<html>
+<%- include("../layouts/header") %>
 
-<head>
-    <title>Products</title>
-</head>
+<div class="container-fluid">
 
-<body>
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <h2>Product List</h2>
+        <div>
+            <h2 class="fw-bold">Products</h2>
+            <p class="text-muted mb-0">
+                Manage all your products
+            </p>
+        </div>
 
-    <a href="/products/add">+ Add Product</a>
+        <a href="/products/add" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>
+            Add Product
+        </a>
 
-    <br><br>
+    </div>
 
-    <table border="1" cellpadding="10">
+    <div class="card shadow border-0 rounded-4">
 
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>HSN</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>GST</th>
-            <th>Stock</th>
-            <th>Unit</th>
-            <th>Action</th>
-        </tr>
+        <div class="card-body">
 
-        <% products.forEach(product => { %>
+            <div class="row mb-3">
 
-        <tr>
+                <div class="col-md-4 ms-auto">
 
-            <td><%= product.id %></td>
-            <td><%= product.product_name %></td>
-            <td><%= product.hsn_code %></td>
-            <td><%= product.category %></td>
-            <td><%= product.price %></td>
-            <td><%= product.gst_percentage %>%</td>
-            <td><%= product.stock %></td>
-            <td><%= product.unit %></td>
+                    <input
+                        type="text"
+                        id="searchProduct"
+                        class="form-control"
+                        placeholder="🔍 Search Product">
 
-            <td>
-                <a href="/products/edit/<%= product.id %>">Edit</a> |
-                <a href="/products/delete/<%= product.id %>"
-                   onclick="return confirm('Delete this product?')">
-                    Delete
-                </a>
-            </td>
+                </div>
 
-        </tr>
+            </div>
 
-        <% }) %>
+            <div class="table-responsive">
 
-    </table>
+                <table class="table table-hover align-middle" id="productTable">
 
-</body>
+                    <thead class="table-dark">
 
-</html>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product</th>
+                            <th>HSN</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>GST</th>
+                            <th>Stock</th>
+                            <th>Unit</th>
+                            <th width="170">Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <% products.forEach(product => { %>
+
+                        <tr>
+
+                            <td><%= product.id %></td>
+
+                            <td>
+                                <strong><%= product.product_name %></strong>
+                            </td>
+
+                            <td><%= product.hsn_code %></td>
+
+                            <td>
+                                <span class="badge bg-info text-dark">
+                                    <%= product.category %>
+                                </span>
+                            </td>
+
+                            <td>₹ <%= product.price %></td>
+
+                            <td>
+                                <span class="badge bg-success">
+                                    <%= product.gst_percentage %>%
+                                </span>
+                            </td>
+
+                            <td>
+                                <% if(product.stock > 10){ %>
+
+                                    <span class="badge bg-success">
+                                        <%= product.stock %>
+                                    </span>
+
+                                <% } else { %>
+
+                                    <span class="badge bg-danger">
+                                        <%= product.stock %>
+                                    </span>
+
+                                <% } %>
+                            </td>
+
+                            <td><%= product.unit %></td>
+
+                            <td>
+
+                                <a
+                                    href="/products/edit/<%= product.id %>"
+                                    class="btn btn-warning btn-sm">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </a>
+
+                                <a
+                                    href="/products/delete/<%= product.id %>"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Delete this product?')">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const search=document.getElementById("searchProduct");
+
+search.addEventListener("keyup",()=>{
+
+const value=search.value.toLowerCase();
+
+const rows=document.querySelectorAll("#productTable tbody tr");
+
+rows.forEach(row=>{
+
+row.style.display=row.innerText.toLowerCase().includes(value)
+?"":"none";
+
+});
+
+});
+
+</script>
+
+<%- include("../layouts/footer") %>
